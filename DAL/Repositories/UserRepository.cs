@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.DAL.Repositories
 {
-    internal class UserRepository : BaseRepository, IUserRepository
+    public class UserRepository : BaseRepository, IUserRepository
     {
+        public List<UserEntity> GetAllUsers()
+        {
+            return Query<UserEntity>("select * from users");
+        }
+
         public int Create(UserEntity userEntity)
         {
             return Execute(@"insert into users (firstname,lastname,password,email) 
@@ -43,6 +48,7 @@ namespace SocialNetwork.DAL.Repositories
     }
     public interface IUserRepository
     {
+        List<UserEntity> GetAllUsers();
         int Create(UserEntity userEntity);
         UserEntity FindByEmail(string email);
         IEnumerable<UserEntity> FindAll();
