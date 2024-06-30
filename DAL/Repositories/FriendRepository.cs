@@ -23,10 +23,16 @@ namespace SocialNetwork.DAL.Repositories
         {
             return Execute(@"delete from friends where id = :id_p", new { id_p = id });
         }
+
+        public List<FriendEntity> GetAllFriends()
+        {
+            return Query<FriendEntity>("select * from friends");
+        }
     }
 
     public interface IFriendRepository
     {
+        List<FriendEntity> GetAllFriends();
         int Create(FriendEntity friendEntity);
         IEnumerable<FriendEntity> FindAllByUserId(int userId);
         int Delete(int id);

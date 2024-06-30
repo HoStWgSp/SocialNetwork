@@ -10,6 +10,9 @@ namespace SocialNetwork.PLL.Views
     {
         public void Show()
         {
+
+
+
             Console.WriteLine("Войти в профиль (нажмите 1)");
             Console.WriteLine("Зарегистрироваться (нажмите 2)");
 

@@ -15,9 +15,11 @@ namespace SocialNetwork.BLL.Services
     {
         MessageService messageService;
         IUserRepository userRepository;
+        IFriendRepository friendRepository;
         public UserService()
         {
             userRepository = new UserRepository();
+            friendRepository = new FriendRepository();
             messageService = new MessageService();
         }
 
@@ -55,6 +57,24 @@ namespace SocialNetwork.BLL.Services
             if (this.userRepository.Create(userEntity) == 0)
                 throw new Exception();
 
+        }
+
+        public void AddToFriend(User user, UserAuthenticationData userAuthenticationData)
+        {
+            if (String.IsNullOrEmpty(userAuthenticationData.Email))
+                throw new ArgumentNullException();
+
+            var findUserEntity = userRepository.FindByEmail(userAuthenticationData.Email);
+            if (findUserEntity is null) throw new UserNotFoundException();
+
+            var friendEntity = new FriendEntity()
+            {
+                id = findUserEntity.id,
+                user_id=user.Id,
+                friend_id=findUserEntity.id
+            };
+
+            friendRepository.Create(friendEntity);
         }
 
         public User Authenticate(UserAuthenticationData userAuthenticationData)
@@ -124,6 +144,11 @@ namespace SocialNetwork.BLL.Services
         public List<UserEntity> GetAllUsers()
         {
             return userRepository.GetAllUsers();
+        }
+
+        public List<FriendEntity> GetAllFriends()
+        {
+            return friendRepository.GetAllFriends();
         }
 
         public int DeleteUser(User user)

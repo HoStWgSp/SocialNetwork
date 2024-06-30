@@ -73,9 +73,12 @@
     <Compile Include="DAL\Repositories\UserRepository.cs" />
     <Compile Include="PLL\Helpers\AlertMessage.cs" />
     <Compile Include="PLL\Helpers\SuccessMessage.cs" />
+    <Compile Include="PLL\Views\AddUserToFriends.cs" />
+    <Compile Include="PLL\Views\AllFriends.cs" />
     <Compile Include="PLL\Views\AuthenticationView.cs" />
     <Compile Include="PLL\Views\MainView.cs" />
     <Compile Include="PLL\Views\MessageSendingView.cs" />
+    <Compile Include="PLL\Views\RegisteredUsers.cs" />
     <Compile Include="PLL\Views\RegistrationView.cs" />
     <Compile Include="PLL\Views\UserDataUpdateView.cs" />
     <Compile Include="PLL\Views\UserIncomingMessageView.cs" />

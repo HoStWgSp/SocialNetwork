@@ -24,6 +24,9 @@ namespace SocialNetwork
         public static MessageSendingView messageSendingView;
         public static UserIncomingMessageView userIncomingMessageView;
         public static UserOutcomingMessageView userOutcomingMessageView;
+        public static RegisteredUsers registeredUsers;
+        public static AddUserToFriends addUserToFriends;
+        public static AllFriends allFriends;
 
         static void Main(string[] args)
         {
@@ -39,6 +42,12 @@ namespace SocialNetwork
             messageSendingView = new MessageSendingView(messageService, userService);
             userIncomingMessageView = new UserIncomingMessageView();
             userOutcomingMessageView = new UserOutcomingMessageView();
+            registeredUsers = new RegisteredUsers();
+            addUserToFriends = new AddUserToFriends(userService);
+            allFriends= new AllFriends();
+
+            registeredUsers.Show();
+            allFriends.Show();
 
             while (true)
             {
