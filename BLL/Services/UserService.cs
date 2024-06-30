@@ -13,11 +13,12 @@ namespace SocialNetwork.BLL.Services
 {
     public class UserService
     {
+        MessageService messageService;
         IUserRepository userRepository;
-
         public UserService()
         {
             userRepository = new UserRepository();
+            messageService = new MessageService();
         }
 
         public void Register(UserRegistrationData userRegistrationData)
@@ -28,13 +29,13 @@ namespace SocialNetwork.BLL.Services
             if (String.IsNullOrEmpty(userRegistrationData.LastName))
                 throw new ArgumentNullException();
 
-            if (String.IsNullOrEmpty(userRegistrationData.Email))
-                throw new ArgumentNullException();
-
             if (String.IsNullOrEmpty(userRegistrationData.Password))
                 throw new ArgumentNullException();
 
-            if (userRegistrationData.Password.Length < 6)
+            if (String.IsNullOrEmpty(userRegistrationData.Email))
+                throw new ArgumentNullException();
+
+            if (userRegistrationData.Password.Length < 8)
                 throw new ArgumentNullException();
 
             if (!new EmailAddressAttribute().IsValid(userRegistrationData.Email))
@@ -43,16 +44,17 @@ namespace SocialNetwork.BLL.Services
             if (userRepository.FindByEmail(userRegistrationData.Email) != null)
                 throw new ArgumentNullException();
 
-            UserEntity userEntity = new UserEntity()
+            var userEntity = new UserEntity()
             {
                 firstname = userRegistrationData.FirstName,
                 lastname = userRegistrationData.LastName,
-                email = userRegistrationData.Email,
-                password = userRegistrationData.Password
+                password = userRegistrationData.Password,
+                email = userRegistrationData.Email
             };
 
-            if (userRepository.Create(userEntity) == 0)
+            if (this.userRepository.Create(userEntity) == 0)
                 throw new Exception();
+
         }
 
         public User Authenticate(UserAuthenticationData userAuthenticationData)
@@ -69,6 +71,14 @@ namespace SocialNetwork.BLL.Services
         public User FindByEmail(string email)
         {
             var findUserEntity = userRepository.FindByEmail(email);
+            if (findUserEntity is null) throw new UserNotFoundException();
+
+            return ConstructUserModel(findUserEntity);
+        }
+
+        public User FindById(int id)
+        {
+            var findUserEntity = userRepository.FindById(id);
             if (findUserEntity is null) throw new UserNotFoundException();
 
             return ConstructUserModel(findUserEntity);
@@ -94,6 +104,10 @@ namespace SocialNetwork.BLL.Services
 
         private User ConstructUserModel(UserEntity userEntity)
         {
+            var incomingMessages = messageService.GetIncomingMessagesByUserId(userEntity.id);
+
+            var outgoingMessages = messageService.GetOutcomingMessagesByUserId(userEntity.id);
+
             return new User(userEntity.id,
                           userEntity.firstname,
                           userEntity.lastname,
@@ -101,7 +115,10 @@ namespace SocialNetwork.BLL.Services
                           userEntity.email,
                           userEntity.photo,
                           userEntity.favorite_movie,
-                          userEntity.favorite_book);
+                          userEntity.favorite_book,
+                          incomingMessages,
+                          outgoingMessages
+                          );
         }
 
         public List<UserEntity> GetAllUsers()
